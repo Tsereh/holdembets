@@ -1,0 +1,13 @@
+<resources>
+    <!-- MainActivity layout -->
+    <string name="app_name">Holdem Bets</string>
+    <string name="edit_text_room_key_hint">Insert room key</string>
+    <string name="btn_join_room_text">Join room</string>
+    <string name="or">OR</string>
+    <string name="btn_create_room_text">Create new room</string>
+    <string name="edit_text_username_hint">Your name</string>
+
+    <!-- MainActivity controller -->
+    <string name="empty_name_toast">Name field cannot be blank</string>
+    <string name="empty_roomkey_toast">Room key field cannot be blank</string>
+</resources>

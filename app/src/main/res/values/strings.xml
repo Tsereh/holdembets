@@ -10,4 +10,6 @@
     <!-- MainActivity controller -->
     <string name="empty_name_toast">Name field cannot be blank</string>
     <string name="empty_roomkey_toast">Room key field cannot be blank</string>
+
+    <string name="room_not_found_toast">No rooms matching</string>
 </resources>

@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 
 public class GameAdminActivity extends AppCompatActivity {
@@ -27,10 +26,7 @@ public class GameAdminActivity extends AppCompatActivity {
 
         // connect socket client to the server
         try {
-            socket = IO.socket("http://10.0.2.2:3000/");
-
-            socket.connect();
-
+            socket = SocketSingleton.getInstance();
             socket.emit("createroom", username);
         } catch (Exception e) {
             e.printStackTrace();

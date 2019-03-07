@@ -26,4 +26,10 @@ public class GamePlayerActivity extends AppCompatActivity {
         tvUsersInRoom = findViewById(R.id.tvUsersInRoom);
         tvUsersInRoom.setText(users);
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SocketSingleton.disconnect();
+    }
 }

@@ -24,15 +24,14 @@ public class GameAdminActivity extends AppCompatActivity {
 
         username = getIntent().getExtras().getString("usernickname");
 
-        // connect socket client to the server
-        try {
-            socket = SocketSingleton.getInstance();
-            socket.emit("createroom", username);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (savedInstanceState == null) {
+            SocketSingleton.getInstance().emit("createroom", username);
+        } else {
+            roomKey = savedInstanceState.getString("roomKey");
+            roomKeyDisplay.setText(roomKey);
         }
 
-        socket.on("createdroom", new Emitter.Listener() {
+        SocketSingleton.getInstance().on("createdroom", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
                 runOnUiThread(new Runnable() {
@@ -45,5 +44,22 @@ public class GameAdminActivity extends AppCompatActivity {
                 });
             }
         });
+
+        roomKeyDisplay.setText(roomKey);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(isFinishing()) {
+            SocketSingleton.disconnect();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("roomKey", roomKey);
     }
 }

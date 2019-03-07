@@ -20,4 +20,11 @@ public class SocketSingleton {
 
         return socket;
     }
+
+    public static void disconnect() {
+        if (socket!=null) {
+            socket.disconnect();
+            socket = null;
+        }
+    }
 }

@@ -57,14 +57,14 @@ import org.json.JSONObject;
                         e.printStackTrace();
                     }
 
-                    SocketSingleton.getInstance().on("usersinroom", new Emitter.Listener() {
+                    SocketSingleton.getInstance().on("roomdata", new Emitter.Listener() {
                         @Override
                         public void call(final Object... args) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     Intent i = new Intent(MainActivity.this, GamePlayerActivity.class);
-                                    i.putExtra("usersinroom", args[0].toString());
+                                    i.putExtra("roomdata", args[0].toString());
                                     i.putExtra("username", username);
                                     startActivity(i);
                                     return;

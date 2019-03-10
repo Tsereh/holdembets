@@ -3,9 +3,7 @@ package com.example.android.holdembets;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
@@ -19,8 +17,8 @@ public class GamePlayerActivity extends AppCompatActivity {
     private Room room;
     private String username;
 
-    private TextView roomKeyDisplay;
     private ListView mListView;
+    private PlayerListAdapter adapter;
     private ConstraintLayout clGame;
 
     @Override
@@ -28,46 +26,49 @@ public class GamePlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_player);
 
-        roomKeyDisplay = findViewById(R.id.tvRoomKey);
         mListView = findViewById(R.id.listView);
         clGame = findViewById(R.id.clGame);
 
         if (savedInstanceState != null) {
             username = savedInstanceState.getString("usernickname");
             room = savedInstanceState.getParcelable("room");
-            roomKeyDisplay.setText(room.getName());
-            PlayerListAdapter adapter = new PlayerListAdapter(this, R.layout.player_adapter_view_layout, room.getPlayers(), username, GamePlayerActivity.this, clGame, room);
+            getSupportActionBar().setTitle("Room key: " + room.getName());
+            adapter = new PlayerListAdapter(this, R.layout.player_adapter_view_layout, room.getPlayers(), username, GamePlayerActivity.this, clGame, room);
             mListView.setAdapter(adapter);
         } else {
             username = getIntent().getExtras().getString("usernickname");
-        }
 
-        JSONObject roomObject = null;
-        try {
-            roomObject = new JSONObject(getIntent().getExtras().getString("roomdata"));
+            JSONObject roomObject = null;
+            try {
+                roomObject = new JSONObject(getIntent().getExtras().getString("roomdata"));
 
-            String rName = roomObject.getString("name");
-            Double rMinBuyIn = roomObject.getDouble("minBuyIn");
-            Double rMaxBuyIn = roomObject.getDouble("maxBuyIn");
-            Double rSmallBlind = roomObject.getDouble("smallBlind");
-            Double rBigBlind = roomObject.getDouble("bigBlind");
-            room = new Room(rName, rMinBuyIn, rMaxBuyIn, rSmallBlind, rBigBlind);
+                String rName = roomObject.getString("name");
+                Double rMinBuyIn = roomObject.getDouble("minBuyIn");
+                Double rMaxBuyIn = roomObject.getDouble("maxBuyIn");
+                Double rSmallBlind = roomObject.getDouble("smallBlind");
+                Double rBigBlind = roomObject.getDouble("bigBlind");
+                room = new Room(rName, rMinBuyIn, rMaxBuyIn, rSmallBlind, rBigBlind);
 
-            JSONObject users = roomObject.getJSONObject("users");
-            JSONArray userKeys = users.names();
-            for (int i = 0; i < userKeys.length(); i++) {
-                String key = userKeys.getString(i);
-                JSONObject userObject = users.getJSONObject(key);
+                JSONObject users = roomObject.getJSONObject("users");
+                JSONArray userKeys = users.names();
+                for (int i = 0; i < userKeys.length(); i++) {
+                    String key = userKeys.getString(i);
+                    JSONObject userObject = users.getJSONObject(key);
 
-                String uName = userObject.getString("name");
-                Double uBalance = userObject.getDouble("balance");
-                boolean uAdmin = userObject.getBoolean("admin");
+                    String uName = userObject.getString("name");
+                    Double uBalance = userObject.getDouble("balance");
+                    boolean uAdmin = userObject.getBoolean("admin");
 
-                Player player = new Player(uName, uBalance, uAdmin);
-                room.addUser(player);
+                    Player player = new Player(uName, uBalance, uAdmin);
+                    room.addUser(player);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+            getSupportActionBar().setTitle("Room key: " + room.getName());
+            adapter = new PlayerListAdapter(getApplicationContext(), R.layout.player_adapter_view_layout, room.getPlayers(), username, GamePlayerActivity.this, clGame, room);
+            mListView.setAdapter(adapter);
         }
 
         SocketSingleton.getInstance().on("userrefilled", new Emitter.Listener() {
@@ -77,10 +78,45 @@ public class GamePlayerActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Update users balance in list that refilled balance
-                        Player updatedPlayer = room.updatePlayerBalance((String)args[0], ((Integer)args[1]).doubleValue());
-                        View v = mListView.getChildAt((Integer) args[2]);
-                        TextView tvBalance = v.findViewById(R.id.tvLvBalance);
-                        tvBalance.setText(updatedPlayer.getBalance().toString());
+                        room.updatePlayerBalance((String)args[0], ((Integer)args[1]).doubleValue());
+                        mListView.invalidateViews();
+                    }
+                });
+            }
+        });
+
+        SocketSingleton.getInstance().on("userdisconnected", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        room.deletePlayer((String)args[0]);
+                        mListView.invalidateViews();
+                    }
+                });
+            }
+        });
+
+        SocketSingleton.getInstance().on("userjoined", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject userObject = null;
+                        try {
+                            userObject = new JSONObject((String)args[0]);
+                            String uName = userObject.getString("name");
+                            Double uBalance = userObject.getDouble("balance");
+                            boolean uAdmin = userObject.getBoolean("admin");
+
+                            Player nPlayer = new Player(uName, uBalance, uAdmin);
+                            room.addUser(nPlayer);
+                            mListView.invalidateViews();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
@@ -90,7 +126,7 @@ public class GamePlayerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        SocketSingleton.disconnect();
+        SocketSingleton.disconnectUser(room.getName(), username);
     }
 
     @Override

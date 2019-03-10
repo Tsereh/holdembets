@@ -21,6 +21,14 @@ public class SocketSingleton {
         return socket;
     }
 
+    public static void disconnectUser(String roomKey, String username) {
+        if (socket!=null) {
+            socket.emit("disconnectwithdata", roomKey, username);
+//            socket.disconnect();
+            socket = null;
+        }
+    }
+
     public static void disconnect() {
         if (socket!=null) {
             socket.disconnect();

@@ -78,7 +78,7 @@ class PlayerListAdapter extends ArrayAdapter<Player> {
                     ft.addToBackStack(null);
 
                     BuyDialogFragment buyDialog = new BuyDialogFragment();
-                    buyDialog.setData(room, clientsUsername, position);
+                    buyDialog.setData(room, clientsUsername);
                     buyDialog.show(ft, "dialog");
                 }
             });

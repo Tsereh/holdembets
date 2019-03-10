@@ -13,7 +13,6 @@ import android.widget.NumberPicker;
 public class BuyDialogFragment extends DialogFragment {
     private Room room;
     private String clientsUsername;
-    private int position;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,7 +36,7 @@ public class BuyDialogFragment extends DialogFragment {
         builder.setPositiveButton(R.string.buy, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                SocketSingleton.getInstance().emit("userbuyin", room.getName(), clientsUsername, npBuyin.getValue(), position);
+                SocketSingleton.getInstance().emit("userbuyin", room.getName(), clientsUsername, npBuyin.getValue());
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -50,10 +49,9 @@ public class BuyDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    public void setData(Room room, String clientsUsername, int position) {
+    public void setData(Room room, String clientsUsername) {
         this.room = room;
         this.clientsUsername = clientsUsername;
-        this.position = position;
     }
 
     @Override

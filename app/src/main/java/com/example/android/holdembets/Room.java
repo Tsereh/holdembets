@@ -59,6 +59,16 @@ public class Room implements Parcelable {
         return null;
     }
 
+    public void deletePlayer(String name) {
+        Iterator<Player> iterator = players.iterator();
+        while (iterator.hasNext()) {
+            Player player = iterator.next();
+            if (player.getName().equals(name)) {
+                players.remove(player);
+            }
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;

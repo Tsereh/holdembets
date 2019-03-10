@@ -3,9 +3,7 @@ package com.example.android.holdembets;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.github.nkzawa.emitter.Emitter;
 
@@ -20,6 +18,7 @@ public class GameAdminActivity extends AppCompatActivity {
     private ConstraintLayout clGame;
 
     private ListView mListView;
+    private PlayerListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class GameAdminActivity extends AppCompatActivity {
             username = savedInstanceState.getString("usernickname");
             room = savedInstanceState.getParcelable("room");
             getSupportActionBar().setTitle("Room key: " + room.getName());
-            PlayerListAdapter adapter = new PlayerListAdapter(this, R.layout.player_adapter_view_layout, room.getPlayers(), username, GameAdminActivity.this, clGame, room);
+            adapter = new PlayerListAdapter(this, R.layout.player_adapter_view_layout, room.getPlayers(), username, GameAdminActivity.this, clGame, room);
             mListView.setAdapter(adapter);
         }
 
@@ -74,7 +73,7 @@ public class GameAdminActivity extends AppCompatActivity {
                         }
 
                         getSupportActionBar().setTitle("Room key: " + room.getName());
-                        PlayerListAdapter adapter = new PlayerListAdapter(getApplicationContext(), R.layout.player_adapter_view_layout, room.getPlayers(), username, GameAdminActivity.this, clGame, room);
+                        adapter = new PlayerListAdapter(getApplicationContext(), R.layout.player_adapter_view_layout, room.getPlayers(), username, GameAdminActivity.this, clGame, room);
                         mListView.setAdapter(adapter);
                     }
                 });
@@ -88,21 +87,60 @@ public class GameAdminActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         // Update users balance in list that refilled balance
-                        Player updatedPlayer = room.updatePlayerBalance((String)args[0], ((Integer)args[1]).doubleValue());
-                        View v = mListView.getChildAt((Integer) args[2]);
-                        TextView tvBalance = v.findViewById(R.id.tvLvBalance);
-                        tvBalance.setText(updatedPlayer.getBalance().toString());
+                        room.updatePlayerBalance((String)args[0], ((Integer)args[1]).doubleValue());
+                        mListView.invalidateViews();
                     }
                 });
             }
         });
+
+        SocketSingleton.getInstance().on("userdisconnected", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        room.deletePlayer((String)args[0]);
+                        mListView.invalidateViews();
+                    }
+                });
+            }
+        });
+
+        SocketSingleton.getInstance().on("userjoined", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject userObject = null;
+                        try {
+                            userObject = new JSONObject((String)args[0]);
+                            String uName = userObject.getString("name");
+                            Double uBalance = userObject.getDouble("balance");
+                            boolean uAdmin = userObject.getBoolean("admin");
+
+                            Player nPlayer = new Player(uName, uBalance, uAdmin);
+                            room.addUser(nPlayer);
+                            mListView.invalidateViews();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if(isFinishing()) {
-            SocketSingleton.disconnect();
+            SocketSingleton.disconnectUser(room.getName(), username);
+            username = null;
+            room = null;
         }
     }
 

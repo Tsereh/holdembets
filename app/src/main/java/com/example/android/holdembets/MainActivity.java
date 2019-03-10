@@ -75,6 +75,8 @@ import org.json.JSONObject;
                                     startActivity(i);
                                     createBtn.setEnabled(true);
                                     joinBtn.setEnabled(true);
+                                    SocketSingleton.getInstance().off("noroomfound");
+                                    SocketSingleton.getInstance().off("roomdata");
                                     return;
                                 }
                             });
@@ -92,6 +94,8 @@ import org.json.JSONObject;
                                     Toast.makeText(MainActivity.this, string, Toast.LENGTH_SHORT).show();
                                     createBtn.setEnabled(true);
                                     joinBtn.setEnabled(true);
+                                    SocketSingleton.getInstance().off("noroomfound");
+                                    SocketSingleton.getInstance().off("roomdata");
                                     return;
                                 }
                             });

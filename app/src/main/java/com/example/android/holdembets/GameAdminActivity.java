@@ -115,7 +115,7 @@ public class GameAdminActivity extends AppCompatActivity {
                     public void run() {
                         JSONObject userObject = null;
                         try {
-                            userObject = new JSONObject((String)args[0]);
+                            userObject = (JSONObject)args[0];
                             String uName = userObject.getString("name");
                             Double uBalance = userObject.getDouble("balance");
                             boolean uAdmin = userObject.getBoolean("admin");

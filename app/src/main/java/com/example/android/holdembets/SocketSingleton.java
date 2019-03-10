@@ -10,7 +10,7 @@ public class SocketSingleton {
     public static Socket getInstance() {
         if (socket == null) {
             try {
-                socket = IO.socket("http://10.0.2.2:3000/");
+                socket = IO.socket("https://evening-meadow-31771.herokuapp.com/");
 
                 socket.connect();
             } catch (Exception e) {

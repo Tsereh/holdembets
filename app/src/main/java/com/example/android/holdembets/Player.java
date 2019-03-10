@@ -1,6 +1,9 @@
 package com.example.android.holdembets;
 
-public class Player {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Player implements Parcelable {
     private String name;
     private Double balance;
     private boolean admin;
@@ -25,5 +28,17 @@ public class Player {
 
     public void setBalance(Double balance) {
         this.balance = balance;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeDouble(balance);
+        parcel.writeValue(admin);
     }
 }

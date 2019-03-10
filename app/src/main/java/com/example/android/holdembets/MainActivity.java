@@ -31,9 +31,13 @@ import org.json.JSONObject;
             @Override
             public void onClick(View view) {
                 if (!usernameField.getText().toString().isEmpty()) {
+                    createBtn.setEnabled(false);
+                    joinBtn.setEnabled(false);
                     Intent i = new Intent(MainActivity.this, GameAdminActivity.class);
                     i.putExtra("usernickname", usernameField.getText().toString());
                     startActivity(i);
+                    createBtn.setEnabled(true);
+                    joinBtn.setEnabled(true);
                 } else {
                     Toast.makeText(MainActivity.this, R.string.empty_name_toast, Toast.LENGTH_SHORT).show();
                 }
@@ -44,6 +48,8 @@ import org.json.JSONObject;
             @Override
             public void onClick(View view) {
                 if (!usernameField.getText().toString().isEmpty() && !roomKeyField.getText().toString().isEmpty()) {
+                    createBtn.setEnabled(false);
+                    joinBtn.setEnabled(false);
                     final String username = usernameField.getText().toString();
                     final String roomKey = roomKeyField.getText().toString();
 
@@ -65,8 +71,10 @@ import org.json.JSONObject;
                                 public void run() {
                                     Intent i = new Intent(MainActivity.this, GamePlayerActivity.class);
                                     i.putExtra("roomdata", args[0].toString());
-                                    i.putExtra("username", username);
+                                    i.putExtra("usernickname", username);
                                     startActivity(i);
+                                    createBtn.setEnabled(true);
+                                    joinBtn.setEnabled(true);
                                     return;
                                 }
                             });
@@ -82,6 +90,8 @@ import org.json.JSONObject;
                                     SocketSingleton.disconnect();
                                     String string = getString(R.string.room_not_found_toast) + " " + roomKey;
                                     Toast.makeText(MainActivity.this, string, Toast.LENGTH_SHORT).show();
+                                    createBtn.setEnabled(true);
+                                    joinBtn.setEnabled(true);
                                     return;
                                 }
                             });

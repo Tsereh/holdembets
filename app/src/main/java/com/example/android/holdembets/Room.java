@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Room implements Parcelable {
     private String name;
@@ -44,6 +45,18 @@ public class Room implements Parcelable {
 
     public Double getBigBlind() {
         return bigBlind;
+    }
+
+    public Player updatePlayerBalance(String name, Double newBalance) {
+        Iterator<Player> iterator = players.iterator();
+        while (iterator.hasNext()) {
+            Player player = iterator.next();
+            if (player.getName().equals(name)) {
+                player.setBalance(newBalance);
+                return player;
+            }
+        }
+        return null;
     }
 
     @Override

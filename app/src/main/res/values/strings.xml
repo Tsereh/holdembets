@@ -12,4 +12,8 @@
     <string name="empty_roomkey_toast">Room key field cannot be blank</string>
 
     <string name="room_not_found_toast">No rooms matching</string>
+
+    <string name="buy">Buy</string>
+    <string name="buy_more">Buy in more credit</string>
+    <string name="cancel">Cancel</string>
 </resources>

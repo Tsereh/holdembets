@@ -22,4 +22,8 @@ public class Player {
     public boolean isAdmin() {
         return admin;
     }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
+    }
 }

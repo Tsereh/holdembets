@@ -1,3 +1,5 @@
+// List adapter for showing players inside game activities.
+
 package com.example.android.holdembets;
 
 import android.content.Context;
@@ -61,12 +63,14 @@ class PlayerListAdapter extends ArrayAdapter<Player> {
 
         tvName.setText(name);
         tvBalance.setText(balance.toString());
+        // If list item belongs to user, add "buy" for topping up the balance
         if (clientsUsername.equals(name)) {
             Button btnBuy = new Button(mContext);
             btnBuy.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             btnBuy.setText(R.string.buy);
             layout.addView(btnBuy);
 
+            // Show BuyDialogFragment if "Buy" button is clicked
             btnBuy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

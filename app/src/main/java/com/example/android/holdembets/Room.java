@@ -1,3 +1,5 @@
+// Stores game rooms data. Implements Parceable so it can be stored in savedInstanceState.
+
 package com.example.android.holdembets;
 
 import android.os.Parcel;
@@ -47,6 +49,7 @@ public class Room implements Parcelable {
         return bigBlind;
     }
 
+    // Finds player from the players list by its name, and updates its balance
     public Player updatePlayerBalance(String name, Double newBalance) {
         Iterator<Player> iterator = players.iterator();
         while (iterator.hasNext()) {
@@ -59,6 +62,7 @@ public class Room implements Parcelable {
         return null;
     }
 
+    // Finds player from the players list by its name, and deletes it from the list
     public void deletePlayer(String name) {
         Iterator<Player> iterator = players.iterator();
         while (iterator.hasNext()) {
@@ -70,6 +74,8 @@ public class Room implements Parcelable {
         }
     }
 
+
+    // Parceable stuff
     @Override
     public int describeContents() {
         return 0;

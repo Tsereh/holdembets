@@ -1,3 +1,5 @@
+// Dialog fragment that pops up when player clicks "buy" button, allowing user to top up own balance.
+
 package com.example.android.holdembets;
 
 import android.app.AlertDialog;
@@ -16,6 +18,7 @@ public class BuyDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        // If activity is recreated (for exaple after rotation)
         if (savedInstanceState != null) {
             clientsUsername = savedInstanceState.getString("clientsUsername");
             room = savedInstanceState.getParcelable("room");
@@ -25,6 +28,7 @@ public class BuyDialogFragment extends DialogFragment {
         View view = (View) inflater.inflate(R.layout.buyin_picker, null);
         final NumberPicker npBuyin = view.findViewById(R.id.npBuyin);
 
+        // Setting numberpickers min & max values according to what is set as buy in limits inside room
         int min = (int) Math.round(room.getMinBuyIn());
         int max = (int) Math.round(room.getMaxBuyIn());
         npBuyin.setMinValue(min);
@@ -49,6 +53,7 @@ public class BuyDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    // Sets room and clientsUsername after the dialog fragment is created, so that they are accessible inside onCreateDialog()
     public void setData(Room room, String clientsUsername) {
         this.room = room;
         this.clientsUsername = clientsUsername;

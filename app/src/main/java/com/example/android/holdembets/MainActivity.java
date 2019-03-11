@@ -27,6 +27,7 @@ import org.json.JSONObject;
         usernameField = findViewById(R.id.etUsername);
         roomKeyField = findViewById(R.id.etRoomKey);
 
+        // Create button clicked, if name field is not empty, launches admins activity, where new room is created
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -44,6 +45,7 @@ import org.json.JSONObject;
             }
         });
 
+        // Join button is clicked, if name & room key fields are not empty, emits "joinroom" to server, and opens player activity if gets existing room from the server. If specified room does not exist, notify user.
         joinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -63,6 +65,7 @@ import org.json.JSONObject;
                         e.printStackTrace();
                     }
 
+                    // Server response with existing rooms data
                     SocketSingleton.getInstance().on("roomdata", new Emitter.Listener() {
                         @Override
                         public void call(final Object... args) {
@@ -75,6 +78,7 @@ import org.json.JSONObject;
                                     startActivity(i);
                                     createBtn.setEnabled(true);
                                     joinBtn.setEnabled(true);
+                                    // Cancel listening for sockets calls, new ones are created after every join button click
                                     SocketSingleton.getInstance().off("noroomfound");
                                     SocketSingleton.getInstance().off("roomdata");
                                     return;
@@ -83,6 +87,7 @@ import org.json.JSONObject;
                         }
                     });
 
+                    // Server response that notifies about unexisting room
                     SocketSingleton.getInstance().on("noroomfound", new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
@@ -94,6 +99,7 @@ import org.json.JSONObject;
                                     Toast.makeText(MainActivity.this, string, Toast.LENGTH_SHORT).show();
                                     createBtn.setEnabled(true);
                                     joinBtn.setEnabled(true);
+                                    // Cancel listening for sockets calls, new ones are created after every join button click
                                     SocketSingleton.getInstance().off("noroomfound");
                                     SocketSingleton.getInstance().off("roomdata");
                                     return;

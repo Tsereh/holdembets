@@ -1,3 +1,5 @@
+// Stores sockets information. There can exist only one socket at a time, and it should be accessible everywhere.
+
 package com.example.android.holdembets;
 
 import com.github.nkzawa.socketio.client.IO;
@@ -21,10 +23,10 @@ public class SocketSingleton {
         return socket;
     }
 
+    // Sends server a users information that is disconnecting, so it can be processed and disconnected from the servers side
     public static void disconnectUser(String roomKey, String username) {
         if (socket!=null) {
             socket.emit("disconnectwithdata", roomKey, username);
-//            socket.disconnect();
             socket = null;
         }
     }

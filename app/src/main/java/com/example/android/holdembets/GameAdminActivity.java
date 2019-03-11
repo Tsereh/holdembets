@@ -1,3 +1,5 @@
+// Game admins activity, same as players activity, difference is in launching activity and getting initial data. Admin should have additional functionality compared to regular players.
+
 package com.example.android.holdembets;
 
 import android.os.Bundle;
@@ -28,10 +30,13 @@ public class GameAdminActivity extends AppCompatActivity {
         mListView = findViewById(R.id.listView);
         clGame = findViewById(R.id.clGame);
 
+        // Checks if activity is created for the first time, or recreated (for example after rotation), and assigns values accordingly.
         if (savedInstanceState == null) {
+            // Activity created for the first time, get data from intents extras & call server to create new room
             username = getIntent().getExtras().getString("usernickname");
             SocketSingleton.getInstance().emit("createroom", username);
         } else {
+            // Activity recreated, get data from savedInstanceState
             username = savedInstanceState.getString("usernickname");
             room = savedInstanceState.getParcelable("room");
             getSupportActionBar().setTitle("Room key: " + room.getName());
@@ -39,6 +44,7 @@ public class GameAdminActivity extends AppCompatActivity {
             mListView.setAdapter(adapter);
         }
 
+        // Get newly created rooms data from the server
         SocketSingleton.getInstance().on("createdroom", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
@@ -57,6 +63,7 @@ public class GameAdminActivity extends AppCompatActivity {
 
                             JSONObject users = roomObject.getJSONObject("users");
                             JSONArray userKeys = users.names();
+                            // Add every player/user got from server to local room
                             for (int i = 0; i < userKeys.length(); i++) {
                                 String key = userKeys.getString(i);
                                 JSONObject userObject = users.getJSONObject(key);
@@ -73,6 +80,7 @@ public class GameAdminActivity extends AppCompatActivity {
                         }
 
                         getSupportActionBar().setTitle("Room key: " + room.getName());
+                        // Build a ListView for players in room
                         adapter = new PlayerListAdapter(getApplicationContext(), R.layout.player_adapter_view_layout, room.getPlayers(), username, GameAdminActivity.this, clGame, room);
                         mListView.setAdapter(adapter);
                     }
@@ -80,6 +88,7 @@ public class GameAdminActivity extends AppCompatActivity {
             }
         });
 
+        // Get information from server if some of the players top ups its balance, and update it locally
         SocketSingleton.getInstance().on("userrefilled", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
@@ -94,6 +103,7 @@ public class GameAdminActivity extends AppCompatActivity {
             }
         });
 
+        // Get information from the server if some of the players leaves the room, and delete it locally
         SocketSingleton.getInstance().on("userdisconnected", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
@@ -107,6 +117,7 @@ public class GameAdminActivity extends AppCompatActivity {
             }
         });
 
+        // Get information from the server if new user joins the room, and add it locally
         SocketSingleton.getInstance().on("userjoined", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
@@ -134,6 +145,7 @@ public class GameAdminActivity extends AppCompatActivity {
 
     }
 
+    // Disconnect socket if activity is destroyed
     @Override
     protected void onDestroy() {
         super.onDestroy();

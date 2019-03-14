@@ -1,19 +1,50 @@
 <resources>
+    <string name="done">Done</string>
+    <string name="to">to</string>
+    <string name="won">won</string>
     <!-- MainActivity layout -->
-    <string name="app_name">Holdem Bets</string>
-    <string name="edit_text_room_key_hint">Insert room key</string>
-    <string name="btn_join_room_text">Join room</string>
-    <string name="or">OR</string>
-    <string name="btn_create_room_text">Create new room</string>
-    <string name="edit_text_username_hint">Your name</string>
+        <string name="app_name">Holdem Bets</string>
+        <string name="edit_text_room_key_hint">Insert room key</string>
+        <string name="btn_join_room_text">Join room</string>
+        <string name="or">OR</string>
+        <string name="btn_create_room_text">Create new room</string>
+        <string name="edit_text_username_hint">Your name</string>
 
     <!-- MainActivity controller -->
-    <string name="empty_name_toast">Name field cannot be blank</string>
-    <string name="empty_roomkey_toast">Room key field cannot be blank</string>
+        <string name="empty_name_toast">Name field cannot be blank</string>
+        <string name="empty_roomkey_toast">Room key field cannot be blank</string>
 
-    <string name="room_not_found_toast">No rooms matching</string>
+        <string name="room_not_found_toast">No rooms matching</string>
 
-    <string name="buy">Buy</string>
-    <string name="buy_more">Buy in more credit</string>
-    <string name="cancel">Cancel</string>
+    <!-- Game -->
+        <string name="not_started">Not started</string>
+        <string name="pre_flop">Pre-Flop</string>
+        <string name="flop">Flop</string>
+        <string name="turn">Turn</string>
+        <string name="river">River</string>
+        <string name="pot">Pot: </string>
+
+        <!-- Admin activity -->
+            <string name="deal">Deal cards</string>
+            <string name="pick_winners">Pick the winner(s)</string>
+            <string name="select_at_least_one_winner">Please, select at least one winner</string>
+
+        <!-- Clients -->
+            <string name="your_turn">"It's your turn"</string>
+            <string name="your_current_bet">Your current bet: </string>
+            <string name="raise_to">Raise your bet to</string>
+            <string name="check">Check</string>
+            <string name="call">Call</string>
+            <string name="fold">Fold</string>
+            <string name="raise">Raise</string>
+            <string name="buy">Buy</string>
+            <string name="buy_more">Buy in more credit</string>
+            <string name="cancel">Cancel</string>
+
+            <string name="checked">checked</string>
+            <string name="folded">folded</string>
+            <string name="called">called</string>
+            <string name="raised">raised</string>
+
+
 </resources>

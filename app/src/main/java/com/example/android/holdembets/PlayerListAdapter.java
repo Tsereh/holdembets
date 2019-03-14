@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,26 +50,53 @@ class PlayerListAdapter extends ArrayAdapter<Player> {
         // Get players information
         String name = getItem(position).getName();
         Double balance = getItem(position).getBalance();
+        Double currentBet = getItem(position).getCurrentBet();
         boolean admin = getItem(position).isAdmin();
+        int seat = getItem(position).getSeat();
+        boolean turn = getItem(position).isTurn();
+        boolean fold = getItem(position).isFold();
 
         // Create player object with the information
-        Player player = new Player(name, balance, admin);
+        Player player = new Player(name, balance, currentBet, admin, seat, fold);
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
 
         final ViewGroup layout = (ViewGroup) convertView.findViewById(R.id.layoutPlayerAdapter);
         TextView tvName = (TextView) convertView.findViewById(R.id.tvLvUsername);
+        TextView tvSeat = (TextView) convertView.findViewById(R.id.tvSeat);
+        TextView tvFoldBet = (TextView) convertView.findViewById(R.id.tvFoldBet);
         TextView tvBalance = (TextView) convertView.findViewById(R.id.tvLvBalance);
 
         tvName.setText(name);
         tvBalance.setText(balance.toString());
+
+        // Set background color of player that's turn it is
+        if (turn) {
+            layout.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorAccentTransparent));
+        }
+
+        // Indicate if player is SB, BB, or D
+        if (seat == 0) {
+            tvSeat.setText("SB");
+        } else if (seat == 1) {
+            tvSeat.setText("BB");
+        } else if (seat == (room.getPlayers().size()-1)) {
+            tvSeat.setText("D");
+        }
+
+        if (fold) {
+            tvFoldBet.setText("FOLD");
+        } else if (currentBet > 0) {
+            tvFoldBet.setText(currentBet.toString());
+        }
+
         // If list item belongs to user, add "buy" for topping up the balance
         if (clientsUsername.equals(name)) {
             Button btnBuy = new Button(mContext);
             btnBuy.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             btnBuy.setText(R.string.buy);
-            layout.addView(btnBuy);
+            layout.addView(btnBuy, 3);
 
             // Show BuyDialogFragment if "Buy" button is clicked
             btnBuy.setOnClickListener(new View.OnClickListener() {

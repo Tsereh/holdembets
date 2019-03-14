@@ -7,13 +7,18 @@ import android.os.Parcelable;
 
 public class Player implements Parcelable {
     private String name;
-    private Double balance;
-    private boolean admin;
+    private Double balance, currentBet;
+    private boolean admin, turn, fold;
+    private int seat;// Players seat. 0 = SB, 1 = BB, 2 = UTG ... LAST = D
 
-    public Player(String name, Double balance, boolean admin) {
+    public Player(String name, Double balance, Double currentBet, boolean admin, int seat, boolean fold) {
         this.name = name;
         this.balance = balance;
+        this.currentBet = currentBet;
         this.admin = admin;
+        this.seat = seat;
+        this.turn = false;
+        this.fold = fold;
     }
 
     public String getName() {
@@ -24,9 +29,37 @@ public class Player implements Parcelable {
         return balance;
     }
 
+    public Double getCurrentBet() { return currentBet; }
+
+    public void setCurrentBet(Double currentBet) {
+        this.currentBet = currentBet;
+    }
+
+    public void matchCurrentBet(Double betToMatch) {
+        Double betRaise = betToMatch - this.currentBet;
+        this.balance = this.balance - betRaise;
+        this.currentBet = betToMatch;
+    }
+
     public boolean isAdmin() {
         return admin;
     }
+
+    public boolean isFold() {
+        return fold;
+    }
+
+    public void setFold(boolean fold) {
+        this.fold = fold;
+    }
+
+    public int getSeat() { return seat; }
+
+    public void setSeat(int seat) { this.seat = seat; }
+
+    public boolean isTurn() { return turn; }
+
+    public void setTurn(boolean turn) { this.turn = turn ; }
 
     public void setBalance(Double balance) {
         this.balance = balance;

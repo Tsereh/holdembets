@@ -8,6 +8,56 @@
     android:layout_height="match_parent"
     tools:context=".GameAdminActivity">
 
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <TextView
+                android:id="@+id/tvGameStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp" />
+
+            <Button
+                android:id="@+id/btnDeal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/deal" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="0">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_gravity="end"
+                android:layout_height="48dp"
+                android:text="@string/pot" />
+
+            <TextView
+                android:id="@+id/tvPot"
+                android:layout_gravity="end"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
@@ -19,6 +69,6 @@
         android:layout_marginRight="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 </android.support.constraint.ConstraintLayout>
